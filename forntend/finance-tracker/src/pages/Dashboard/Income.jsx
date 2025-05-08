@@ -57,7 +57,7 @@ const Income = () => {
                 onClose={()=>setOpenAddIncomeModal(false)}
                 title="Add Income"
             >
-                <div></div>
+                <div>Add Income Form</div>
             </Modal>
             </div>
         </DashboardLayout>
