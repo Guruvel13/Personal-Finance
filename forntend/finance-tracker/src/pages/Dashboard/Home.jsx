@@ -13,7 +13,8 @@ import FinanceOverview from "../../components/Dashboard/FinanceOverview";
 import RecentIncomeWithChart from "../../components/Dashboard/RecentIncomeWithChart";
 import ExpenseTransactions from "../../components/Dashboard/ExpenseTransactions";
 import RecentIncome from "../../components/Dashboard/RecentIncome";
-import Last30DaysExpenses from "../../components/Dashboard/last30DaysExpenses"
+import Last30DaysExpenses from "../../components/Dashboard/last30DaysExpenses";
+
 const Home = () => {
   useUserAuth();
   const navigate = useNavigate();
@@ -45,7 +46,9 @@ const Home = () => {
     return (
       <DashboardLayout activeMenu="Dashboard">
         <div className="flex justify-center items-center min-h-[70vh]">
-          <div className="text-lg font-semibold animate-pulse">Loading Dashboard...</div>
+          <div className="text-lg font-semibold animate-pulse">
+            Loading Dashboard...
+          </div>
         </div>
       </DashboardLayout>
     );
@@ -64,8 +67,7 @@ const Home = () => {
   return (
     <DashboardLayout activeMenu="Dashboard">
       <div className="my-5 mx-auto">
-        
-        {/* Top Cards */}
+        {/* Top Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <InfoCard
             icon={<IoMdCard />}
@@ -87,9 +89,8 @@ const Home = () => {
           />
         </div>
 
-        {/* Main Content */}
+        {/* Main Dashboard Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          
           <RecentTransactions
             transactions={dashboardData?.recentTransactions || []}
             onSeeMore={() => navigate("/expense")}
@@ -119,7 +120,6 @@ const Home = () => {
             transactions={dashboardData?.last60DaysIncome?.transactions || []}
             onSeeMore={() => navigate("/income")}
           />
-
         </div>
       </div>
     </DashboardLayout>

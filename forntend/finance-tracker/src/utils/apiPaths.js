@@ -1,4 +1,5 @@
 export const BASE_URL = 'http://localhost:8000';
+// export const BASE_URL = 'http://192.168.192.238:8000';
 
 export const API_PATHS = {
     AUTH: {

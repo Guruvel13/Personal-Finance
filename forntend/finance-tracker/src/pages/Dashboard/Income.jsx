@@ -3,7 +3,9 @@ import DashboardLayout from "../../components/layouts/DashboardLayout";
 import IncomeOverview from "../../components/Income/IncomeOverview";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
-
+import Modal from "../../components/Income/Modal"
+import AddIncomeForm from "../../components/Income/AddIncomeForm";
+import IncomeList from "../../components/Income/IncomeList";
 const Income = () => {
     const [incomeData, setIncomeData] = useState([])
     const [loading, setLoading] = useState(false);
@@ -30,8 +32,40 @@ const Income = () => {
         }
     }
 
-    const handleAddIncome = async (income) => { }
+    const handleAddIncome = async (income) => {
+        const {source, amount, date, icon} = income
+        if(!source.trim()){
+            toast.error("Source is required")
+            return
+        }
+        if(!amount || isNaN(amount) || Number(amount) <= 0){
+            toast.error("Amount Should be a valid number")
+            return
+        }
+        if(!date){
+            toast.error("Date is required")
+            return
+        }
+        if(!icon){
+            toast.error("Icon is required")
+            return
+        }
+        try {
+            await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME,{
+                    source,
+                    amount,
+                    date,
+                    icon
+                });
+                setOpenAddIncomeModal(false)
+                toast.success("Income added successfully")
+                fetchIncomeDetails()
+        }
+        catch (error) {
+            console.log("Something went wrong. Please try again ", error.response?.data?.message || error.message);
 
+        }
+     }
     const deleteIncome = async (id) => { }
 
     const handleDownloadIncomeDetails = async () => { }
@@ -51,13 +85,23 @@ const Income = () => {
                             onAddIncome={() => setOpenAddIncomeModal(true)}
                         />
                     </div>
+                    <IncomeList
+                        transactions={incomeData}
+                        onDelete={(id) => {
+                            setOpenDeleteAlert({
+                                show: true,
+                                data: id,
+                            })
+                        }}
+                        onDownload={handleDownloadIncomeDetails}
+                    />
                 </div>
             <Modal
                 isOpen={openAddIncomeModal}
                 onClose={()=>setOpenAddIncomeModal(false)}
                 title="Add Income"
             >
-                <div>Add Income Form</div>
+            <AddIncomeForm onAddIncome={handleAddIncome} />
             </Modal>
             </div>
         </DashboardLayout>
