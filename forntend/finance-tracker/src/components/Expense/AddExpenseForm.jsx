@@ -12,7 +12,7 @@ const AddExpenseForm = ({onAddExpense}) => {
     icon: "",
   })
   const handleChange = (key, value) => {
-    setIncome(prev => ({ ...income, [key]: value }))
+    setIncome({ ...income, [key]: value })
   }
   return (
     <div>
