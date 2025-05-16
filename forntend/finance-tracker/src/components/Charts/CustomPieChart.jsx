@@ -7,56 +7,66 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import CustomTooltip from "../Charts/CustomTooltip"
-import CustomLegend from "../Charts/CustomLegend"
+import CustomTooltip from "../Charts/CustomTooltip";
+import CustomLegend from "../Charts/CustomLegend";
 
 const CustomPieChart = ({ data, label, totalAmount, colors, showTextAnchor }) => {
   return (
-    <ResponsiveContainer width="100%" height={380}>
-      <PieChart>
-        <Pie
-          data={data}
-          dataKey="amount"
-          nameKey="name"
-          cx="50%"
-          cy="50%"
-          outerRadius={130}
-          innerRadius={100}
-          labelLine={false}
+    <div style={{ position: "relative", width: "100%", height: 380 }}>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={data}
+            dataKey="amount"
+            nameKey="name"
+            cx="50%"
+            cy="50%"
+            outerRadius={130}
+            innerRadius={100}
+            labelLine={false}
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+          <Legend content={<CustomLegend />} />
+        </PieChart>
+      </ResponsiveContainer>
+
+      {showTextAnchor && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            textAlign: "center",
+            pointerEvents: "none", // so clicks pass through
+            userSelect: "none",
+          }}
         >
-          {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-          ))}
-        </Pie>
-        <Tooltip content={CustomTooltip} />
-        <Legend  content={CustomLegend}/>
-        {showTextAnchor && (
-          <>
-            <text
-              x="50%"
-              y="50%"
-              dy={-25}
-              textAnchor="middle"
-              fill="#666"
-              fontSize="14px"
-            >
-              {label}
-            </text>
-            <text
-              x="50%"
-              y="50%"
-              dy={8}
-              textAnchor="middle"
-              fill="#333"
-              fontSize="24px"
-              fontWeight="semi-bold"
-            >
-              {totalAmount}
-            </text>
-          </>
-        )}
-      </PieChart>
-    </ResponsiveContainer>
+          <div
+            style={{
+              fontSize: 14,
+              color: "#666",
+              marginBottom: 4,
+            }}
+          >
+            {label}
+          </div>
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 600,
+              color: "#333",
+            }}
+          >
+            {totalAmount}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

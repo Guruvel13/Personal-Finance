@@ -88,13 +88,13 @@ const Expense = () => {
     }
 
     const handleDownloadExpenseDetails = async () => {
-        try{
+        try {
             const response = await axiosInstance.get(
-                API_PATHS.EXPENSE.DOWNLOAD_EXPENSE, 
+                API_PATHS.EXPENSE.DOWNLOAD_EXPENSE,
                 {
-                responseType: "blob",
-            }
-        )
+                    responseType: "blob",
+                }
+            )
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement("a");
             link.href = url;
@@ -104,7 +104,7 @@ const Expense = () => {
             document.body.removeChild(link);
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
-        }catch(error){
+        } catch (error) {
             console.log("Something went wrong. Please try again ", error.response?.data?.message || error.message);
             toast.error("Failed to download expense details")
         }
@@ -124,7 +124,7 @@ const Expense = () => {
                     <div className="">
                         <ExpenseOverview
                             transactions={expenseData}
-                            onExpenseIncome={() => setOpenAddExpenseModal(true)}
+                            onAddExpense={() => setOpenAddExpenseModal(true)}
                         />
                     </div>
                     <ExpenseList
@@ -140,18 +140,18 @@ const Expense = () => {
                 >
                     <AddExpenseForm onAddExpense={handleAddExpense} />
                 </Modal>
-            <Modal
-                isOpen={openDeleteAlert.show}
-                onClose={() => setOpenDeleteAlert({ show: false, data: null })}
-                title="Delete Expense"
-            >
-                <DeleteAlert
-                    content="Are you sure you want to delete this income?"
-                    onDelete={() => deleteExpense(openDeleteAlert.data)}
-                />
-            </Modal>
-        </div>
-            </DashboardLayout >
+                <Modal
+                    isOpen={openDeleteAlert.show}
+                    onClose={() => setOpenDeleteAlert({ show: false, data: null })}
+                    title="Delete Expense"
+                >
+                    <DeleteAlert
+                        content="Are you sure you want to delete this income?"
+                        onDelete={() => deleteExpense(openDeleteAlert.data)}
+                    />
+                </Modal>
+            </div>
+        </DashboardLayout >
     )
 }
 export default Expense;
