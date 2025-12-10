@@ -140,3 +140,42 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+
+// ==================
+// Update User Info
+// ==================
+exports.updateUserInfo = async (req, res) => {
+  const { fullName, profileImageUrl } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (fullName) user.fullName = fullName;
+    if (profileImageUrl) user.profileImageUrl = profileImageUrl;
+
+    await user.save();
+
+    const cleanUser = {
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+    };
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: cleanUser,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error updating profile",
+      error: err.message,
+    });
+  }
+};
+
+
