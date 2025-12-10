@@ -75,33 +75,27 @@ const Settings = () => {
                     <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                         <h4 className="text-lg font-medium text-gray-700 mb-4">Security</h4>
                         <form onSubmit={handlePasswordChange}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
-                                <Input
-                                    value={password.currentPassword}
-                                    onChange={({ target }) => setPassword({ ...password, currentPassword: target.value })}
-                                    type="password"
-                                    placeholder="Enter current password"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                                <Input
-                                    value={password.newPassword}
-                                    onChange={({ target }) => setPassword({ ...password, newPassword: target.value })}
-                                    type="password"
-                                    placeholder="Enter new password"
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                                <Input
-                                    value={password.confirmPassword}
-                                    onChange={({ target }) => setPassword({ ...password, confirmPassword: target.value })}
-                                    type="password"
-                                    placeholder="Confirm new password"
-                                />
-                            </div>
+                            <Input
+                                label="Current Password"
+                                value={password.currentPassword}
+                                onChange={({ target }) => setPassword({ ...password, currentPassword: target.value })}
+                                type="password"
+                                placeholder="Enter current password"
+                            />
+                            <Input
+                                label="New Password"
+                                value={password.newPassword}
+                                onChange={({ target }) => setPassword({ ...password, newPassword: target.value })}
+                                type="password"
+                                placeholder="Enter new password"
+                            />
+                            <Input
+                                label="Confirm New Password"
+                                value={password.confirmPassword}
+                                onChange={({ target }) => setPassword({ ...password, confirmPassword: target.value })}
+                                type="password"
+                                placeholder="Confirm new password"
+                            />
                             <button
                                 type="submit"
                                 className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
