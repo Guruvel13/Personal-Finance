@@ -16,8 +16,12 @@ router.post("/upload-image",upload.single("image"), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
     }
-    const imageUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-    res.status(200).json({ imageUrl });
+    // Convert buffer to Base64
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    
+    // Return the Data URI as the imageUrl
+    res.status(200).json({ imageUrl: dataURI });
 });
 
 module.exports = router;
