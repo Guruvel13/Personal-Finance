@@ -217,40 +217,42 @@ const Settings = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                        <h4 className="text-lg font-medium text-gray-700 mb-4">Security</h4>
-                        <form onSubmit={handlePasswordChange}>
-                            <Input
-                                label="Current Password"
-                                value={password.currentPassword}
-                                onChange={({ target }) => setPassword({ ...password, currentPassword: target.value })}
-                                type="password"
-                                placeholder="Enter current password"
-                            />
-                            <Input
-                                label="New Password"
-                                value={password.newPassword}
-                                onChange={({ target }) => setPassword({ ...password, newPassword: target.value })}
-                                type="password"
-                                placeholder="Enter new password"
-                            />
-                            <Input
-                                label="Confirm New Password"
-                                value={password.confirmPassword}
-                                onChange={({ target }) => setPassword({ ...password, confirmPassword: target.value })}
-                                type="password"
-                                placeholder="Confirm new password"
-                            />
-                            <button
-                                type="submit"
-                                className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
-                            >
-                                Update Password
-                            </button>
-                        </form>
+                {isEditingProfile && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <h4 className="text-lg font-medium text-gray-700 mb-4">Security</h4>
+                            <form onSubmit={handlePasswordChange}>
+                                <Input
+                                    label="Current Password"
+                                    value={password.currentPassword}
+                                    onChange={({ target }) => setPassword({ ...password, currentPassword: target.value })}
+                                    type="password"
+                                    placeholder="Enter current password"
+                                />
+                                <Input
+                                    label="New Password"
+                                    value={password.newPassword}
+                                    onChange={({ target }) => setPassword({ ...password, newPassword: target.value })}
+                                    type="password"
+                                    placeholder="Enter new password"
+                                />
+                                <Input
+                                    label="Confirm New Password"
+                                    value={password.confirmPassword}
+                                    onChange={({ target }) => setPassword({ ...password, confirmPassword: target.value })}
+                                    type="password"
+                                    placeholder="Confirm new password"
+                                />
+                                <button
+                                    type="submit"
+                                    className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                                >
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </DashboardLayout>
     );
