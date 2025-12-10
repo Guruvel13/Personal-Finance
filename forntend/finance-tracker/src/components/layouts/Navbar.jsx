@@ -14,7 +14,10 @@ const Navbar = ({activeMenu}) => {
                 }
             </button>
 
-            <h2 className="text-lg font-medium text-black"> FinTrack</h2>
+            <div className="flex items-center gap-2">
+                <img src="/logo.png" alt="FinTrack Logo" className="w-8 h-8 rounded-full bg-cover" />
+                <h2 className="text-lg font-medium text-black">FinTrack</h2>
+            </div>
             {openSideMenu && (
                 <div className="fixed top-[61px] -ml-4 bg-white">
                     <SideMenu activeMenu={activeMenu}/>
