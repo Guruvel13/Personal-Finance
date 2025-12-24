@@ -17,8 +17,9 @@ const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const {updateUser} = useContext(UserContext);
+    const { updateUser } = useContext(UserContext);
     const navigate = useNavigate();
 
     const handleSignUp = async (e) => {
@@ -26,48 +27,51 @@ const SignUp = () => {
 
         let profileImageUrl = "";
 
-        if(!fullName) {
+        if (!fullName) {
             setError("Please enter your full name");
             return;
         }
-        if(!validateEmail(email)) {
+        if (!validateEmail(email)) {
             setError("Please enter a valid email address");
             return;
         }
-        if(!password) {
+        if (!password) {
             setError("Password is required");
             return;
         }
         setError(null);
+        setLoading(true);
 
         //signup api
-        try{
+        try {
 
-            if(profilePic){
+            if (profilePic) {
                 const imgUploadResponse = await uploadImage(profilePic);
                 profileImageUrl = imgUploadResponse.imageUrl || "";
             }
-                    
+
             const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
                 fullName,
                 email,
                 password,
                 profileImageUrl,
             });
-            const {token, user} = response.data;
-            if(token){
+            const { token, user } = response.data;
+            if (token) {
                 localStorage.setItem("token", token);
                 updateUser(user);
                 navigate("/dashboard");
             }
-        }catch(error){
-            if(error.response && error.response.data.message){
+            setLoading(false);
+        } catch (error) {
+            if (error.response && error.response.data.message) {
                 setError(error.response.data.message);
-            }else{
+            } else {
                 setError("Something went wrong. Please try again later.");
             }
+            setLoading(false);
         }
-     };
+    };
     return (
         <AuthLayout>
             <div className="lg:w-[100%] h-auto md:h-full mt-10 md:mt-0 flex flex-col justify-center">
@@ -108,8 +112,9 @@ const SignUp = () => {
                     {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
                     <button
                         type="submit"
+                        disabled={loading}
                         className="btn-primary">
-                        SIGN UP
+                        {loading ? "SIGNING UP..." : "SIGN UP"}
                     </button>
                     <p className="text-[13px] text-slate-800 mt-3">
                         Already having an account? {" "}
