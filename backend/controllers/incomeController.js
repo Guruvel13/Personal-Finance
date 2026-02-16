@@ -61,7 +61,6 @@ exports.downloadIncomeExcel = async (req, res) => {
             Source: item.source,
             Description: item.description,
             Amount : item.amount,
-            Amount : item.amount,
             Date : item.date,
         }))
 
