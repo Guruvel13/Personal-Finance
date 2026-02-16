@@ -8,6 +8,7 @@ import AddIncomeForm from "../../components/Income/AddIncomeForm";
 import IncomeList from "../../components/Income/IncomeList"
 import DeleteAlert from "../../components/layouts/DeleteAlert";
 import { useUserAuth } from "../../hooks/useUserAuth";
+import toast from "react-hot-toast";
 const Income = () => {
     useUserAuth();
     const [incomeData, setIncomeData] = useState([])
