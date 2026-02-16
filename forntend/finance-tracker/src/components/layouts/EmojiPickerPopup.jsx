@@ -21,7 +21,11 @@ export const EmojiPickerPopup = ({ icon, onSelect }) => {
       >
         <div className="w-12 h-12 flex justify-center items-center text-2xl bg-purple-50 text-primary rounded-lg overflow-hidden">
           {icon ? (
-            <img src={icon} alt="Icon" className="w-12 h-12 object-cover" />
+            icon.match(/^(http|data:)/) ? (
+              <img src={icon} alt="Icon" className="w-12 h-12 object-cover" />
+            ) : (
+              <span className="text-3xl">{icon}</span>
+            )
           ) : (
             <LuImage />
           )}
