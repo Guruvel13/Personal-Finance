@@ -21,15 +21,15 @@ const TransactionInfoCard = ({
     <div className="group relative flex items-center gap-4 mt-2 p-3 rounded-lg hover:bg-gray-100/60">
       <div className="w-12 h-12 flex items-center justify-center text-xl text-gray-800 bg-gray-100 rounded-full">
         {icon ? (
-          // If icon is a valid React element (like LuUtensils from react-icons)
           React.isValidElement(icon) ? (
             icon
-          ) : (
-            // If icon is a URL, display it as an image
+          ) : (typeof icon === "string" && (icon.startsWith("http") || icon.startsWith("/") || icon.startsWith("data:"))) ? (
             <img src={icon} alt={title} className="w-6 h-6" />
+          ) : (
+            <span className="text-2xl">{icon}</span>
           )
         ) : (
-          <LuUtensils /> // Fallback icon if no icon is passed
+          <LuUtensils />
         )}
       </div>
 
