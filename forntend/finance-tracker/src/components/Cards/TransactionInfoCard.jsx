@@ -8,7 +8,8 @@ const TransactionInfoCard = ({
   amount,
   type,
   hideDeleteBtn,
-  onDelete, // Ensure this prop is passed if onDelete is being used
+  onDelete,
+  subTitle, // Ensure this prop is passed
 }) => {
   const getAmountStyles = () => {
     return type === "income"
@@ -35,6 +36,7 @@ const TransactionInfoCard = ({
       <div className="flex-1 flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-700 font-medium">{title}</p>
+          {subTitle && <span className="text-xs text-gray-500">{subTitle}</span>}
           <p className="text-xs text-gray-400 mt-1">{date}</p>
         </div>
 

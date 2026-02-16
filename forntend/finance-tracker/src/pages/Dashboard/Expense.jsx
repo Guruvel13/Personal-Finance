@@ -42,7 +42,7 @@ const Expense = () => {
     }
 
     const handleAddExpense = async (expense) => {
-        const { category, amount, date, icon } = expense;
+        const { category, amount, date, icon, title } = expense;
         if (!category.trim()) {
             toast.error("Source is required")
             return
@@ -64,15 +64,14 @@ const Expense = () => {
                 category,
                 amount,
                 date,
-                icon
+                icon,
+                description: title,
             });
             setOpenAddExpenseModal(false)
             toast.success("Expense added successfully")
             fetchExpenseDetails()
         }
         catch (error) {
-            console.log("Something went wrong. Please try again ", error.response?.data?.message || error.message);
-
         }
     }
 

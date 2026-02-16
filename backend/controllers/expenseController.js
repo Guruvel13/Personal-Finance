@@ -5,7 +5,7 @@ const xlsx = require("xlsx");
 exports.addExpense = async (req, res) => {
     const userId = req.user.id;
     try {
-        const { icon, category, amount, date } = req.body;
+        const { icon, category, amount, date, description } = req.body;
 
         if (!category || !amount || !date) {
             return res.status(400).json({
@@ -26,6 +26,7 @@ exports.addExpense = async (req, res) => {
             category,
             amount,
             date: parsedDate,
+            description,
         });
 
         await newExpense.save();
@@ -58,6 +59,7 @@ exports.downloadExpenseExcel = async (req, res) => {
         const expense = await Expense.find ({userId}).sort({date: -1});
         const data = expense.map((item) => ({
             Category: item.category,
+            Description: item.description,
             Amount : item.amount,
             Date : item.date,
         }))
