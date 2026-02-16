@@ -4,9 +4,10 @@ import EmojiPickerPopup from "../layouts/EmojiPickerPopup";
 
 export const AddIncomeForm = ({ onAddIncome }) => {
   const [income, setIncome] = useState({
-    source: "",
+    title: "", // Description
+    source: "", // Category
     amount: "",
-    date: "",
+    date: new Date().toISOString().split('T')[0],
     icon: "",
   });
 
@@ -14,14 +15,42 @@ export const AddIncomeForm = ({ onAddIncome }) => {
     setIncome(prev => ({ ...prev, [key]: value }));
   };
 
+  const predictCategory = (title) => {
+    if (!title) return null;
+    const text = title.toLowerCase();
+
+    // Income Auto-Categorization Rules
+    if (text.match(/salary|wage|paycheck|bonus|commission/)) return { source: "Salary", icon: "💰" };
+    if (text.match(/freelance|contract|gig|upwork|fiverr/)) return { source: "Freelance", icon: "👨‍💻" };
+    if (text.match(/dividend|interest|stock|crypto|investment|trade/)) return { source: "Investment", icon: "📈" };
+    if (text.match(/business|revenue|sales|profit|shop/)) return { source: "Business", icon: "💼" };
+    if (text.match(/gift|donation|received/)) return { source: "Gift", icon: "🎁" };
+    if (text.match(/refund|cashback|reimbursement/)) return { source: "Refund", icon: "💸" };
+    if (text.match(/rent|tenant/)) return { source: "Rental Income", icon: "🏠" };
+
+    return null;
+  };
+
+  const handleTitleChange = (e) => {
+    const title = e.target.value;
+    handleChange("title", title);
+
+    const prediction = predictCategory(title);
+    if (prediction) {
+      handleChange("source", prediction.source);
+      handleChange("icon", prediction.icon);
+    }
+  };
+
   const handleSubmit = () => {
     if (!income.source || !income.amount || !income.date) {
       alert("Please fill in all fields.");
       return;
     }
-    onAddIncome(income);
+    // Pass description as title
+    onAddIncome({ ...income, description: income.title });
     // Optionally reset the form
-    setIncome({ source: "", amount: "", date: "", icon: "" });
+    setIncome({ title: "", source: "", amount: "", date: new Date().toISOString().split('T')[0], icon: "" });
   };
 
   return (
@@ -32,10 +61,18 @@ export const AddIncomeForm = ({ onAddIncome }) => {
       />
 
       <Input
-        value={income.source}
+        value={income.title}
+        onChange={handleTitleChange}
+        label="Description"
+        placeholder="e.g. January Salary"
+        type="text"
+      />
+
+      <Input
+        value={income.source} // 'source' corresponds to Category
         onChange={({ target }) => handleChange("source", target.value)}
-        label="Source"
-        placeholder="Enter income source"
+        label="Source" // Could trigger confusion if user thinks Source == Description, but keeping consistent with data model
+        placeholder="Salary, Freelance, etc."
         type="text"
       />
 
