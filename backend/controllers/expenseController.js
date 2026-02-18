@@ -74,3 +74,13 @@ exports.downloadExpenseExcel = async (req, res) => {
         res.status(500).json({message: "Server error"});
     }
 }
+
+exports.getExpenseCategories = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const categories = await Expense.distinct("category", { userId });
+        res.status(200).json(categories);
+    } catch (err) {
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+};

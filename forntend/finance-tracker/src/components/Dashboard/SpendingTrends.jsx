@@ -4,39 +4,54 @@ import moment from 'moment';
 
 const SpendingTrends = ({ data }) => {
     const [chartData, setChartData] = useState([]);
-    const [activeTab, setActiveTab] = useState("Monthly");
+    const [activeTab, setActiveTab] = useState("Monthly"); // Default tab
 
     useEffect(() => {
-        // Generate data for the last 30 days with 0s for missing days
-        const processedData = [];
+        if (!data) return;
+
         const endDate = moment();
+        const startDate = moment().subtract(30, 'days'); // Always consider last 30 days of data
+        const processedData = [];
 
-        let daysToShow = 30;
         if (activeTab === "Weekly") {
-            daysToShow = 7;
-        }
+            // Aggregate by Week (Last 4 weeks)
+            for (let i = 0; i < 4; i++) {
+                const weekStart = moment().subtract((3 - i) * 7 + 6, 'days');
+                const weekEnd = moment().subtract((3 - i) * 7, 'days');
 
-        const startDate = moment().subtract(daysToShow, 'days');
+                let rangeTotal = 0;
 
-        // Create a map of date -> total amount
-        const expensesByDate = {};
-        if (data && data.length > 0) {
+                // Sum transactions falling in this week
+                data.forEach(item => {
+                    const itemDate = moment(item.date);
+                    if (itemDate.isBetween(weekStart, weekEnd, 'day', '[]')) {
+                        rangeTotal += Number(item.amount) || 0;
+                    }
+                });
+
+                processedData.push({
+                    day: `Week ${i + 1}`,
+                    fullRange: `${weekStart.format('DD MMM')} - ${weekEnd.format('DD MMM')}`,
+                    amount: rangeTotal
+                });
+            }
+        } else {
+            // Monthly view: Show Daily breakdown for last 30 days
+            // Create a map of date -> total amount
+            const expensesByDate = {};
             data.forEach(item => {
                 const dateStr = moment(item.date).format('YYYY-MM-DD');
-                // Ensure amount is treated as a number
-                const amount = Number(item.amount) || 0;
-                expensesByDate[dateStr] = (expensesByDate[dateStr] || 0) + amount;
+                expensesByDate[dateStr] = (expensesByDate[dateStr] || 0) + (Number(item.amount) || 0);
             });
-        }
 
-        // Iterate including today
-        for (let m = moment(startDate); m.isSameOrBefore(endDate, 'day'); m.add(1, 'days')) {
-            const dateStr = m.format('YYYY-MM-DD');
-            processedData.push({
-                day: m.format('DD MMM'), // Display format
-                fullDate: dateStr,
-                amount: expensesByDate[dateStr] || 0,
-            });
+            for (let m = moment(startDate); m.isSameOrBefore(endDate, 'day'); m.add(1, 'days')) {
+                const dateStr = m.format('YYYY-MM-DD');
+                processedData.push({
+                    day: m.format('DD MMM'),
+                    fullDate: dateStr,
+                    amount: expensesByDate[dateStr] || 0,
+                });
+            }
         }
 
         setChartData(processedData);
@@ -46,7 +61,7 @@ const SpendingTrends = ({ data }) => {
         if (active && payload && payload.length) {
             return (
                 <div className="bg-white p-3 rounded-xl border border-gray-100 shadow-lg shadow-purple-500/10">
-                    <p className="text-xs text-gray-500 mb-1">{label}</p>
+                    <p className="text-xs text-gray-500 mb-1">{payload[0].payload.fullRange || label}</p>
                     <p className="text-sm font-semibold text-gray-800">
                         ₹{payload[0].value.toLocaleString()}
                     </p>
@@ -60,9 +75,9 @@ const SpendingTrends = ({ data }) => {
         <div className="bg-white p-6 rounded-2xl shadow-md shadow-gray-100 border border-gray-200/50 mt-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                 <div>
-                    <h5 className="text-lg font-semibold text-black">Spending Trends</h5>
+                    <h5 className="text-lg font-semibold text-black">SpendingTrends</h5>
                     <p className="text-xs text-slate-400 mt-1">
-                        {activeTab === "Weekly" ? "Daily insights for the last 7 days" : "Daily insights for the last 30 days"}
+                        {activeTab === "Weekly" ? "Weekly insights for the last 4 weeks" : "Daily insights for the last 30 days"}
                     </p>
                 </div>
                 <div className="flex gap-2 bg-gray-50 p-1 rounded-full w-fit">

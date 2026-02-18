@@ -4,7 +4,7 @@ import IncomeOverview from "../../components/Income/IncomeOverview";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import Modal from "../../components/layouts/Modal"
-import AddIncomeForm from "../../components/Income/AddIncomeForm";
+import AddTransactionForm from "../../components/Dashboard/AddTransactionForm";
 import IncomeList from "../../components/Income/IncomeList"
 import DeleteAlert from "../../components/layouts/DeleteAlert";
 import { useUserAuth } from "../../hooks/useUserAuth";
@@ -38,7 +38,7 @@ const Income = () => {
 
     const handleAddIncome = async (income) => {
         const { source, amount, date, icon, description } = income
-        if (!source.trim()) {
+        if (!source?.trim()) {
             toast.error("Source is required")
             return
         }
@@ -50,10 +50,7 @@ const Income = () => {
             toast.error("Date is required")
             return
         }
-        if (!icon) {
-            toast.error("Icon is required")
-            return
-        }
+
         try {
             await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
                 source,
@@ -68,9 +65,22 @@ const Income = () => {
         }
         catch (error) {
             console.log("Something went wrong. Please try again ", error.response?.data?.message || error.message);
-
+            toast.error(error.response?.data?.message || "Failed to add income");
         }
     }
+
+    const handleAddExpense = async (expense) => {
+        try {
+            await axiosInstance.post(API_PATHS.EXPENSE.ADD_EXPENSE, expense);
+            setOpenAddIncomeModal(false);
+            toast.success("Expense added successfully");
+            // We don't refresh income list here as expense won't show up
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to add expense");
+        }
+    };
+
     const deleteIncome = async (id) => {
         try {
             await axiosInstance.delete(API_PATHS.INCOME.DELETE_INCOME(id))
@@ -132,9 +142,14 @@ const Income = () => {
                 <Modal
                     isOpen={openAddIncomeModal}
                     onClose={() => setOpenAddIncomeModal(false)}
-                    title="Add Income"
+                    title="Add Transaction"
                 >
-                    <AddIncomeForm onAddIncome={handleAddIncome} />
+                    <AddTransactionForm
+                        onAddIncome={handleAddIncome}
+                        onAddExpense={handleAddExpense}
+                        onClose={() => setOpenAddIncomeModal(false)}
+                        initialType="income"
+                    />
                 </Modal>
                 <Modal
                     isOpen={openDeleteAlert.show}

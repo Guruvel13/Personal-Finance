@@ -19,18 +19,17 @@ export const EmojiPickerPopup = ({ icon, onSelect }) => {
         className="flex items-center gap-4 cursor-pointer"
         onClick={() => setIsOpen(true)}
       >
-        <div className="w-12 h-12 flex justify-center items-center text-2xl bg-purple-50 text-primary rounded-lg overflow-hidden">
+        <div className="w-10 h-10 flex justify-center items-center text-2xl bg-purple-50 text-primary rounded-lg hover:bg-purple-100 transition-colors">
           {icon ? (
             icon.match(/^(http|data:)/) ? (
-              <img src={icon} alt="Icon" className="w-12 h-12 object-cover" />
+              <img src={icon} alt="Icon" className="w-full h-full object-cover rounded-lg" />
             ) : (
-              <span className="text-3xl">{icon}</span>
+              <span className="text-xl">{icon}</span>
             )
           ) : (
             <LuImage />
           )}
         </div>
-        <p>{icon ? 'Change Icon' : 'Pick Icon'}</p>
       </div>
 
       {isOpen && (

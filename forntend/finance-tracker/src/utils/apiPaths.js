@@ -17,12 +17,14 @@ export const API_PATHS = {
         GET_ALL_INCOME: "/api/v1/income/get",
         DELETE_INCOME: (incomeId) => `/api/v1/income/${incomeId}`,
         DOWNLOAD_INCOME: "/api/v1/income/download",
+        GET_SOURCES: "/api/v1/income/sources",
     },
     EXPENSE: {
         ADD_EXPENSE: "/api/v1/expense/add",
         GET_EXPENSE: "/api/v1/expense/get",
         DELETE_EXPENSE: (expenseId) => `/api/v1/expense/${expenseId}`,
         DOWNLOAD_EXPENSE: "/api/v1/expense/download",
+        GET_CATEGORIES: "/api/v1/expense/categories",
     },
     IMAGE: {
         UPLOAD_IMAGE: "/api/v1/auth/upload-image",

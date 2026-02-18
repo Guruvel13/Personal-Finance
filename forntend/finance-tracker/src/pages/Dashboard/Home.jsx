@@ -12,7 +12,7 @@ import RecentTransactions from "../../components/Dashboard/RecentTransactions";
 import SpendingTrends from "../../components/Dashboard/SpendingTrends";
 import TopCategories from "../../components/Dashboard/TopCategories";
 import Modal from "../../components/layouts/Modal";
-import AddExpenseForm from "../../components/Expense/AddExpenseForm";
+import AddTransactionForm from "../../components/Dashboard/AddTransactionForm";
 import toast from "react-hot-toast";
 
 const Home = () => {
@@ -22,7 +22,7 @@ const Home = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [openAddExpenseModal, setOpenAddExpenseModal] = useState(false);
+  const [openAddTransactionModal, setOpenAddTransactionModal] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
@@ -40,21 +40,29 @@ const Home = () => {
   };
 
   const handleAddExpense = async (expense) => {
-    const { category, amount, date, icon, title } = expense;
     try {
-      await axiosInstance.post(API_PATHS.EXPENSE.ADD_EXPENSE, {
-        category,
-        amount,
-        date,
-        icon,
-        description: title,
-      });
-      setOpenAddExpenseModal(false);
+      await axiosInstance.post(API_PATHS.EXPENSE.ADD_EXPENSE, expense);
+      setOpenAddTransactionModal(false);
       toast.success("Expense added successfully");
       fetchDashboardData();
     } catch (error) {
       console.error(error);
       toast.error("Failed to add expense");
+    }
+  };
+
+  const handleAddIncome = async (income) => {
+    try {
+      await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
+        ...income,
+        source: income.source || income.category // ensure source is set
+      });
+      setOpenAddTransactionModal(false);
+      toast.success("Income added successfully");
+      fetchDashboardData();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add income");
     }
   };
 
@@ -85,7 +93,7 @@ const Home = () => {
             <p className="text-gray-500 text-sm mt-1">Welcome back, here's what's happening with your money.</p>
           </div>
           <button
-            onClick={() => setOpenAddExpenseModal(true)}
+            onClick={() => setOpenAddTransactionModal(true)}
             className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all active:scale-95"
           >
             <IoMdAdd size={20} /> Add Transaction
@@ -138,11 +146,15 @@ const Home = () => {
 
         {/* Modals */}
         <Modal
-          isOpen={openAddExpenseModal}
-          onClose={() => setOpenAddExpenseModal(false)}
-          title="Add Transaction"
+          isOpen={openAddTransactionModal}
+          onClose={() => setOpenAddTransactionModal(false)}
+          title="Add New Transaction"
         >
-          <AddExpenseForm onAddExpense={handleAddExpense} />
+          <AddTransactionForm
+            onAddIncome={handleAddIncome}
+            onAddExpense={handleAddExpense}
+            onClose={() => setOpenAddTransactionModal(false)}
+          />
         </Modal>
 
       </div>

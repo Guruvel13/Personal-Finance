@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import ExpenseOverview from "../../components/Expense/ExpenseOverview"
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
-import AddExpenseForm from "../../components/Expense/AddExpenseForm";
+import AddTransactionForm from "../../components/Dashboard/AddTransactionForm";
 import Modal from "../../components/layouts/Modal";
 import ExpenseList from "../../components/Expense/ExpenseList";
 import DeleteAlert from "../../components/layouts/DeleteAlert";
@@ -43,9 +43,9 @@ const Expense = () => {
     }
 
     const handleAddExpense = async (expense) => {
-        const { category, amount, date, icon, title } = expense;
-        if (!category.trim()) {
-            toast.error("Source is required")
+        const { category, amount, date, icon, description } = expense;
+        if (!category?.trim()) {
+            toast.error("Category is required")
             return
         }
         if (!amount || isNaN(amount) || Number(amount) <= 0) {
@@ -56,25 +56,39 @@ const Expense = () => {
             toast.error("Date is required")
             return
         }
-        if (!icon) {
-            toast.error("Icon is required")
-            return
-        }
+
         try {
             await axiosInstance.post(API_PATHS.EXPENSE.ADD_EXPENSE, {
                 category,
                 amount,
                 date,
                 icon,
-                description: title,
+                description,
             });
             setOpenAddExpenseModal(false)
             toast.success("Expense added successfully")
             fetchExpenseDetails()
         }
         catch (error) {
+            console.log("Something went wrong. Please try again ", error.response?.data?.message || error.message);
+            toast.error(error.response?.data?.message || "Failed to add expense");
         }
     }
+
+    const handleAddIncome = async (income) => {
+        try {
+            await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
+                ...income,
+                source: income.source || income.category // ensure source is set
+            });
+            setOpenAddExpenseModal(false);
+            toast.success("Income added successfully");
+            // We don't refresh expense list here as income won't show up
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to add income");
+        }
+    };
 
     const deleteExpense = async (id) => {
         try {
@@ -136,9 +150,14 @@ const Expense = () => {
                 <Modal
                     isOpen={openAddExpenseModal}
                     onClose={() => setOpenAddExpenseModal(false)}
-                    title="Add Expense"
+                    title="Add Transaction"
                 >
-                    <AddExpenseForm onAddExpense={handleAddExpense} />
+                    <AddTransactionForm
+                        onAddExpense={handleAddExpense}
+                        onAddIncome={handleAddIncome}
+                        onClose={() => setOpenAddExpenseModal(false)}
+                        initialType="expense"
+                    />
                 </Modal>
                 <Modal
                     isOpen={openDeleteAlert.show}
