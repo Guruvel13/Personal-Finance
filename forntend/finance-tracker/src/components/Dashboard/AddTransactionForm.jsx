@@ -37,41 +37,33 @@ const AddTransactionForm = ({ onAddIncome, onAddExpense, onClose, initialType = 
         const text = title.toLowerCase();
 
         if (type === "expense") {
-            // Food & Drink
-            if (text.match(/coffee|cafe|starbucks|tea/)) return { category: "Food & Drink", icon: "☕" };
-            if (text.match(/pizza/)) return { category: "Food & Drink", icon: "🍕" };
-            if (text.match(/burger|mcd/)) return { category: "Food & Drink", icon: "🍔" };
-            if (text.match(/restaurant|dining|lunch|dinner|breakfast|food|swiggy|zomato/)) return { category: "Food & Drink", icon: "🍽️" };
+            // Food
+            if (text.match(/coffee|cafe|starbucks|tea|pizza|burger|mcd|restaurant|dining|lunch|dinner|breakfast|food|swiggy|zomato|grocery|market/)) return { category: "Food", icon: "🍽️" };
 
-            // Transportation
-            if (text.match(/uber|ola|taxi|cab/)) return { category: "Transportation", icon: "🚕" };
-            if (text.match(/bus/)) return { category: "Transportation", icon: "🚌" };
-            if (text.match(/metro|train/)) return { category: "Transportation", icon: "🚇" };
-            if (text.match(/flight|air/)) return { category: "Transportation", icon: "✈️" };
-            if (text.match(/fuel|petrol|diesel/)) return { category: "Transportation", icon: "⛽" };
+            // Transport
+            if (text.match(/uber|ola|taxi|cab|bus|metro|train|flight|air|fuel|petrol|diesel/)) return { category: "Transport", icon: "🚗" };
 
             // Shopping
-            if (text.match(/amazon|flipkart|delivery/)) return { category: "Shopping", icon: "📦" };
-            if (text.match(/clothes|shirt|jeans|shoes/)) return { category: "Shopping", icon: "👔" };
-            if (text.match(/mall|store|shop|purchase/)) return { category: "Shopping", icon: "🛍️" };
+            if (text.match(/amazon|flipkart|delivery|clothes|shirt|jeans|shoes|mall|store|shop|purchase/)) return { category: "Shopping", icon: "🛍️" };
 
-            // Bills & Utilities
-            if (text.match(/electricity|power/)) return { category: "Bills", icon: "⚡" };
-            if (text.match(/net|wifi|broadband/)) return { category: "Bills", icon: "🌐" };
-            if (text.match(/rent/)) return { category: "Bills", icon: "🏠" };
-            if (text.match(/recharge|mobile|bill|subscription/)) return { category: "Bills", icon: "🧾" };
+            // Rent
+            if (text.match(/rent/)) return { category: "Rent", icon: "🏠" };
+
+            // Bills
+            if (text.match(/electricity|power|net|wifi|broadband|recharge|mobile|bill|subscription/)) return { category: "Bills", icon: "🧾" };
 
             // Entertainment
-            if (text.match(/movie|cinema|film|netflix|prime/)) return { category: "Entertainment", icon: "🎬" };
-            if (text.match(/spotify|music/)) return { category: "Entertainment", icon: "🎵" };
-            if (text.match(/game|entertainment/)) return { category: "Entertainment", icon: "🎮" };
+            if (text.match(/movie|cinema|film|netflix|prime|spotify|music|game|entertainment/)) return { category: "Entertainment", icon: "🎬" };
 
             // Health
-            if (text.match(/doctor|med|pharmacy|health|hospital/)) return { category: "Health", icon: "🏥" };
-            if (text.match(/gym|fitness/)) return { category: "Health", icon: "💪" };
+            if (text.match(/doctor|med|pharmacy|health|hospital|gym|fitness/)) return { category: "Health", icon: "🏥" };
 
-            // Groceries (kept generic catch-all for grocery/market if not matched above)
-            if (text.match(/grocery|market/)) return { category: "Groceries", icon: "🛒" };
+            // Education
+            if (text.match(/course|school|college|tuition|books|education|learning|study/)) return { category: "Education", icon: "🎓" };
+
+            // Investment
+            if (text.match(/stock|crypto|investment|trade|sip|mutual fund/)) return { category: "Investment", icon: "📈" };
+
 
         } else {
             // Income

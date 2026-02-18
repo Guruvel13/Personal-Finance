@@ -2,7 +2,7 @@ import React from "react";
 
 const InfoCard = ({ icon, label, value, color, percentage }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100/50 shadow-none hover:shadow-md transition-shadow duration-300">
+    <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-none hover:shadow-md transition-shadow duration-300">
       <div className="flex justify-between items-start mb-4">
         <div
           className={`w-12 h-12 flex items-center justify-center text-[22px] ${color} bg-opacity-10 rounded-xl`}

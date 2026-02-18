@@ -40,7 +40,7 @@ const TopCategories = ({ transactions }) => {
     }, [sortedCategories, totalExpense]);
 
     return (
-        <div className="bg-white p-6 rounded-2xl border border-gray-100/50 mt-6 h-full flex flex-col justify-between">
+        <div className="bg-white p-6 rounded-2xl border border-gray-200 mt-6 h-full flex flex-col justify-between">
             <div>
                 <h5 className="text-lg font-bold text-gray-900 mb-6">Top Categories</h5>
                 <div className="space-y-6">

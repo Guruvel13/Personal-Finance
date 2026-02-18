@@ -5,6 +5,7 @@ import {
     LuLogOut,
     LuSettings,
 } from "react-icons/lu";
+import { IoMdPie } from "react-icons/io";
 
 export const SIDE_MENU_DATA = [
     {
@@ -26,7 +27,13 @@ export const SIDE_MENU_DATA = [
         path : "/expense",
     },
     {
-        id :"04",
+        id: "04",
+        lable: "Budget",
+        icon: IoMdPie,
+        path: "/budget",
+    },
+    {
+        id :"05",
         lable :"Settings",
         icon : LuSettings,
         path : "/settings",

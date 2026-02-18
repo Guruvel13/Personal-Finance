@@ -11,6 +11,7 @@ import { addThousandSeparator } from "../../utils/helper";
 import RecentTransactions from "../../components/Dashboard/RecentTransactions";
 import SpendingTrends from "../../components/Dashboard/SpendingTrends";
 import TopCategories from "../../components/Dashboard/TopCategories";
+import BudgetBreakdown from "../../components/Dashboard/BudgetBreakdown";
 import Modal from "../../components/layouts/Modal";
 import AddTransactionForm from "../../components/Dashboard/AddTransactionForm";
 import toast from "react-hot-toast";
@@ -20,17 +21,37 @@ const Home = () => {
   const navigate = useNavigate();
 
   const [dashboardData, setDashboardData] = useState(null);
+  const [budgets, setBudgets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openAddTransactionModal, setOpenAddTransactionModal] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axiosInstance.get(API_PATHS.DASHBOARD.GET_DATA);
-      if (response?.data) {
-        setDashboardData(response.data);
-        setError(null);
+      setLoading(true);
+      const [dashboardRes, budgetRes, expenseRes] = await Promise.all([
+        axiosInstance.get(API_PATHS.DASHBOARD.GET_DATA),
+        axiosInstance.get(API_PATHS.BUDGET.GET_BUDGETS),
+        axiosInstance.get(API_PATHS.EXPENSE.GET_EXPENSE),
+      ]);
+
+      if (dashboardRes?.data) {
+        setDashboardData(dashboardRes.data);
       }
+
+      if (budgetRes?.data) setBudgets(budgetRes.data);
+
+      // Normalize expense categories
+      const normalizedExpenses = (expenseRes?.data?.expense || []).map(exp => {
+        let category = exp.category;
+        if (category === "Food & Drink" || category === "Groceries") category = "Food";
+        if (category === "Transportation") category = "Transport";
+        return { ...exp, category };
+      });
+      setExpenses(normalizedExpenses);
+
+      setError(null);
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
       setError("Failed to load dashboard data. Please try again later.");
@@ -138,11 +159,14 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Bottom Section: Recent Transactions */}
-        <RecentTransactions
-          transactions={dashboardData?.recentTransactions || []}
-          onSeeMore={() => navigate("/expense")}
-        />
+        {/* Bottom Section: Recent Transactions & Budget Breakdown */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <RecentTransactions
+            transactions={dashboardData?.recentTransactions || []}
+            onSeeMore={() => navigate("/expense")}
+          />
+          <BudgetBreakdown budgets={budgets} expenses={expenses} />
+        </div>
 
         {/* Modals */}
         <Modal

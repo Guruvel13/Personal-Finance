@@ -72,7 +72,7 @@ const SpendingTrends = ({ data }) => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-2xl shadow-md shadow-gray-100 border border-gray-200/50 mt-6">
+        <div className="bg-white p-6 rounded-2xl shadow-md shadow-gray-100 border border-gray-200 mt-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
                 <div>
                     <h5 className="text-lg font-semibold text-black">SpendingTrends</h5>

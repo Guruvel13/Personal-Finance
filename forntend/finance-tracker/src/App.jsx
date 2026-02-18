@@ -5,6 +5,7 @@ import SignUp from "./pages/Auth/SignUp";
 import Home from "./pages/Dashboard/Home";
 import Income from "./pages/Dashboard/Income";
 import Expense from "./pages/Dashboard/Expense";
+import Budget from "./pages/Dashboard/Budget";
 import Settings from "./pages/Dashboard/Settings";
 import Landing from "./pages/Landing/Landing";
 import UserProvider from "./context/UserContext";
@@ -23,15 +24,16 @@ const App = () => {
             <Route path="/dashboard" exact element={<Home />} />
             <Route path="/income" exact element={<Income />} />
             <Route path="/expense" exact element={<Expense />} />
+            <Route path="/budget" exact element={<Budget />} />
             <Route path="/settings" exact element={<Settings />} />
           </Routes>
         </Router>
       </div>
-      <Toaster 
+      <Toaster
         toastOptions={{
           className: "",
-          style:{
-            fontSize :"13px"
+          style: {
+            fontSize: "13px"
           },
         }}
       />

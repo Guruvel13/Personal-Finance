@@ -4,7 +4,7 @@ import moment from "moment";
 
 const RecentTransactions = ({ transactions, onSeeMore }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-gray-100/50 mt-6 shadow-sm">
+    <div className="bg-white p-6 rounded-2xl border border-gray-200 mt-6 shadow-sm h-full flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h5 className="text-lg font-bold text-gray-900">Recent Transactions</h5>
         <button
@@ -15,8 +15,8 @@ const RecentTransactions = ({ transactions, onSeeMore }) => {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[600px]">
+      <div className="flex-1 overflow-x-auto no-scrollbar">
+        <table className="w-full">
           <thead>
             <tr className="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100">
               <th className="pb-3 pl-4">Category</th>

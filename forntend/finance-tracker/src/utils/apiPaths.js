@@ -26,6 +26,11 @@ export const API_PATHS = {
         DOWNLOAD_EXPENSE: "/api/v1/expense/download",
         GET_CATEGORIES: "/api/v1/expense/categories",
     },
+    BUDGET: {
+        ADD_BUDGET: "/api/v1/budget/add-budget",
+        GET_BUDGETS: "/api/v1/budget/get-budgets",
+        DELETE_BUDGET: (budgetId) => `/api/v1/budget/delete-budget/${budgetId}`,
+    },
     IMAGE: {
         UPLOAD_IMAGE: "/api/v1/auth/upload-image",
     },
