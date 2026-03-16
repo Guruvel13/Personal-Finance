@@ -115,7 +115,13 @@ const Income = () => {
 
     useEffect(() => {
         fetchIncomeDetails();
-        return () => { }
+
+        const handleOpenModal = () => setOpenAddIncomeModal(true);
+        window.addEventListener('openAddTransactionModal', handleOpenModal);
+
+        return () => {
+            window.removeEventListener('openAddTransactionModal', handleOpenModal);
+        }
     }, [])
 
     return (

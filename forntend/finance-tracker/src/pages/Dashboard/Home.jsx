@@ -89,6 +89,14 @@ const Home = () => {
 
   useEffect(() => {
     fetchDashboardData();
+
+    // Listen for custom event from SideMenu button
+    const handleOpenModal = () => setOpenAddTransactionModal(true);
+    window.addEventListener('openAddTransactionModal', handleOpenModal);
+
+    return () => {
+      window.removeEventListener('openAddTransactionModal', handleOpenModal);
+    };
   }, []);
 
   if (loading) {

@@ -127,7 +127,12 @@ const Expense = () => {
     useEffect(() => {
         fetchExpenseDetails()
 
-        return () => { };
+        const handleOpenModal = () => setOpenAddExpenseModal(true);
+        window.addEventListener('openAddTransactionModal', handleOpenModal);
+
+        return () => {
+            window.removeEventListener('openAddTransactionModal', handleOpenModal);
+        };
     }, [])
 
 

@@ -5,6 +5,7 @@ import { API_PATHS } from "../../utils/apiPaths";
 import { IoMdAdd } from "react-icons/io";
 import Modal from "../../components/layouts/Modal";
 import AddBudgetForm from "../../components/Budget/AddBudgetForm";
+import AddTransactionForm from "../../components/Dashboard/AddTransactionForm";
 import BudgetOverview from "../../components/Budget/BudgetOverview";
 import BudgetList from "../../components/Budget/BudgetList";
 import BudgetChart from "../../components/Budget/BudgetChart";
@@ -15,6 +16,7 @@ const Budget = () => {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [openAddBudgetModal, setOpenAddBudgetModal] = useState(false);
+    const [openAddTransactionModal, setOpenAddTransactionModal] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -45,7 +47,42 @@ const Budget = () => {
 
     useEffect(() => {
         fetchData();
+
+        // Listen for sidebar button
+        const handleOpenModal = () => setOpenAddTransactionModal(true);
+        window.addEventListener('openAddTransactionModal', handleOpenModal);
+
+        return () => {
+            window.removeEventListener('openAddTransactionModal', handleOpenModal);
+        };
     }, []);
+
+    const handleAddIncome = async (income) => {
+        try {
+            await axiosInstance.post(API_PATHS.INCOME.ADD_INCOME, {
+                ...income,
+                source: income.source || income.category
+            });
+            toast.success("Income added successfully");
+            fetchData();
+            setOpenAddTransactionModal(false);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to add income");
+        }
+    };
+
+    const handleAddExpense = async (expense) => {
+        try {
+            await axiosInstance.post(API_PATHS.EXPENSE.ADD_EXPENSE, expense);
+            toast.success("Expense added successfully");
+            fetchData();
+            setOpenAddTransactionModal(false);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to add expense");
+        }
+    };
 
     const handleAddBudget = async (budgetData) => {
         try {
@@ -112,6 +149,19 @@ const Budget = () => {
                     <AddBudgetForm
                         onAddBudget={handleAddBudget}
                         onClose={() => setOpenAddBudgetModal(false)}
+                    />
+                </Modal>
+
+                {/* Add Transaction Modal */}
+                <Modal
+                    isOpen={openAddTransactionModal}
+                    onClose={() => setOpenAddTransactionModal(false)}
+                    title="Add New Transaction"
+                >
+                    <AddTransactionForm
+                        onAddIncome={handleAddIncome}
+                        onAddExpense={handleAddExpense}
+                        onClose={() => setOpenAddTransactionModal(false)}
                     />
                 </Modal>
 
