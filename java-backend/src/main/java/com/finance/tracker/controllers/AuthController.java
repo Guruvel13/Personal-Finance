@@ -4,6 +4,7 @@ import com.finance.tracker.models.User;
 import com.finance.tracker.repositories.UserRepository;
 import com.finance.tracker.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -20,6 +21,9 @@ public class AuthController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // Node.js endpoint: /api/v1/auth/login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
@@ -30,8 +34,7 @@ public class AuthController {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
-            // TODO: Proper BCrypt verification
-            if (password.equals("password") || user.getPassword().equals(password)) {
+            if (passwordEncoder.matches(password, user.getPassword())) {
                 String token = jwtUtils.generateJwtToken(user.getId());
                 Map<String, Object> response = new HashMap<>();
                 response.put("token", token);
@@ -44,7 +47,7 @@ public class AuthController {
     
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        // TODO: Password hashing should happen here
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         String token = jwtUtils.generateJwtToken(savedUser.getId());
         Map<String, Object> response = new HashMap<>();
