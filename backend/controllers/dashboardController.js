@@ -1,5 +1,7 @@
 const Income = require('../models/Income'); 
 const Expense = require('../models/Expense');   
+const Budget = require('../models/Budget');
+const { isValidObjectId, Types } = require('mongoose');
 const { isValidObjectId, Types } = require('mongoose');
 
 exports.getDashboardData = async (req, res) => {
@@ -68,6 +70,69 @@ exports.getDashboardData = async (req, res) => {
             },
             recentTransactions: lastTransactions,
         });
+
+    } catch (err) {
+        res.status(500).json({ message: "Server error", error: err.message });
+    }
+}
+
+exports.getNotifications = async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const userObjectId = new Types.ObjectId(String(userId));
+
+        // Get all budgets for user where notify is true
+        const budgets = await Budget.find({ userId: userObjectId, notify: true });
+
+        // Calculate expenses per category (this month or overall depending on logic, let's do overall as it's simple)
+        const expensesByCategory = await Expense.aggregate([
+            { $match: { userId: userObjectId } },
+            { $group: { _id: "$category", totalSpent: { $sum: "$amount" } } }
+        ]);
+
+        const expenseMap = {};
+        expensesByCategory.forEach(e => {
+            expenseMap[e._id] = e.totalSpent;
+        });
+
+        const notifications = [];
+        budgets.forEach(budget => {
+            const spent = expenseMap[budget.category] || 0;
+            if (spent > budget.amount) {
+                notifications.push({
+                    _id: budget._id + "_over",
+                    type: "overspending",
+                    category: budget.category,
+                    message: `You have exceeded your budget for ${budget.category}. Budget: $${budget.amount}, Spent: $${spent}.`,
+                    timestamp: new Date(),
+                    icon: budget.icon || "⚠️",
+                    read: false
+                });
+            } else if (spent > budget.amount * 0.9) {
+                notifications.push({
+                    _id: budget._id + "_warn",
+                    type: "warning",
+                    category: budget.category,
+                    message: `You are nearing your budget for ${budget.category}. Budget: $${budget.amount}, Spent: $${spent}.`,
+                    timestamp: new Date(),
+                    icon: budget.icon || "⚠️",
+                    read: false
+                });
+            }
+        });
+
+        // -- ADD SAMPLE NOTIFICATION FOR TESTING --
+        notifications.unshift({
+            _id: "test_sample_notification_" + Date.now(),
+            type: "warning",
+            category: "Testing",
+            message: "This is a sample overspending notification pushed from the web browser!",
+            timestamp: new Date(),
+            icon: "🔔",
+            read: false
+        });
+
+        res.json({ notifications: notifications.sort((a,b) => b.timestamp - a.timestamp) });
 
     } catch (err) {
         res.status(500).json({ message: "Server error", error: err.message });

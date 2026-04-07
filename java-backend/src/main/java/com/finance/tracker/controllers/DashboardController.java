@@ -20,4 +20,11 @@ public class DashboardController {
         response.put("totalBalance", 0);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/notifications")
+    public ResponseEntity<?> getNotifications() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("notifications", new java.util.ArrayList<>());
+        return ResponseEntity.ok(response);
+    }
 }
