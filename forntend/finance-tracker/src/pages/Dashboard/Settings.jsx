@@ -23,6 +23,29 @@ const Settings = () => {
     const [imageFile, setImageFile] = useState(null);
     const fileInputRef = useRef(null);
 
+    // Notification Prefs State
+    const [notifyPrefs, setNotifyPrefs] = useState(() => {
+        const saved = localStorage.getItem('notifyPrefs');
+        return saved ? JSON.parse(saved) : {
+            browserPush: Notification.permission === 'granted',
+            budgetWarning: true,
+            emailUpdates: false
+        };
+    });
+
+    const updatePref = async (key, value) => {
+        const newPrefs = { ...notifyPrefs, [key]: value };
+        setNotifyPrefs(newPrefs);
+        localStorage.setItem('notifyPrefs', JSON.stringify(newPrefs));
+        toast.success("Preferences updated");
+
+        try {
+            await axiosInstance.post(API_PATHS.AUTH.UPDATE_PREFERENCES, newPrefs);
+        } catch (e) {
+            console.error("Failed to sync preferences to backend", e);
+        }
+    };
+
     // Initialize profile data
     React.useEffect(() => {
         if (user) {
@@ -217,8 +240,7 @@ const Settings = () => {
                     </div>
                 </div>
 
-                {isEditingProfile && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                             <h4 className="text-lg font-medium text-gray-700 mb-4">Security</h4>
                             <form onSubmit={handlePasswordChange}>
@@ -245,14 +267,76 @@ const Settings = () => {
                                 />
                                 <button
                                     type="submit"
-                                    className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+                                    className="w-full bg-primary text-white p-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors mt-2"
                                 >
                                     Update Password
                                 </button>
                             </form>
                         </div>
+                        
+                        {/* Notifications Settings Block */}
+                        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                            <h4 className="text-lg font-medium text-gray-700 mb-4">Notification Preferences</h4>
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50/50">
+                                    <div>
+                                        <p className="font-medium text-gray-800">Browser Push Notifications</p>
+                                        <p className="text-xs text-gray-500 mt-1">Receive desktop alerts for overspending</p>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            checked={notifyPrefs.browserPush} 
+                                            onChange={(e) => {
+                                                const isChecked = e.target.checked;
+                                                if (isChecked && "Notification" in window && Notification.permission !== 'granted') {
+                                                    Notification.requestPermission().then(permission => {
+                                                        updatePref('browserPush', permission === 'granted');
+                                                    });
+                                                } else {
+                                                    updatePref('browserPush', isChecked);
+                                                }
+                                            }} 
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+
+                                <div className="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50/50">
+                                    <div>
+                                        <p className="font-medium text-gray-800">Budget Warning Alerts</p>
+                                        <p className="text-xs text-gray-500 mt-1">Notify me when nearing my budget limit (90%)</p>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            checked={notifyPrefs.budgetWarning} 
+                                            onChange={(e) => updatePref('budgetWarning', e.target.checked)} 
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                                
+                                <div className="flex items-center justify-between p-3 border border-gray-100 rounded-xl bg-gray-50/50">
+                                    <div>
+                                        <p className="font-medium text-gray-800">Email Updates</p>
+                                        <p className="text-xs text-gray-500 mt-1">Receive a weekly summary of spending</p>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer" 
+                                            checked={notifyPrefs.emailUpdates} 
+                                            onChange={(e) => updatePref('emailUpdates', e.target.checked)} 
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                )}
             </div>
         </DashboardLayout>
     );
