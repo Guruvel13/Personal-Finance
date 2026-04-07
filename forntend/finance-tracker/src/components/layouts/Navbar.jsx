@@ -28,7 +28,7 @@ const Navbar = ({ activeMenu }) => {
 
             {user && (
                 <div className="flex items-center gap-5">
-                    <select 
+                    {/* <select 
                         className="text-sm bg-gray-50 border border-gray-200 text-gray-700 rounded-md px-2 py-1 outline-none focus:border-primary-500"
                         value={localStorage.getItem('selectedBackend') || 'node'}
                         onChange={(e) => {
@@ -38,10 +38,10 @@ const Navbar = ({ activeMenu }) => {
                     >
                         <option value="node">Node Backend</option>
                         <option value="java">Java Backend</option>
-                    </select>
-                    <div className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 cursor-pointer transition-colors text-gray-400 hover:text-gray-600">
+                    </select> */}
+                    {/* <div className="p-2 bg-gray-50 rounded-full hover:bg-gray-100 cursor-pointer transition-colors text-gray-400 hover:text-gray-600">
                         <RiNotification3Line className="text-xl" />
-                    </div>
+                    </div> */}
 
                     <div className="flex items-center gap-3">
                         {user?.profileImageUrl ? (
