@@ -16,9 +16,11 @@ export const API_PATHS = {
         GET_USER_INFO: "/api/v1/auth/getuser",
         CHANGE_PASSWORD: "/api/v1/auth/change-password",
         UPDATE_USER: "/api/v1/auth/update-profile",
+        UPDATE_PREFERENCES: "/api/v1/auth/update-preferences",
     },
     DASHBOARD: {
         GET_DATA: "/api/v1/dashboard",
+        GET_NOTIFICATIONS: "/api/v1/dashboard/notifications",
     },
     INCOME: {
         ADD_INCOME: "/api/v1/income/add",
