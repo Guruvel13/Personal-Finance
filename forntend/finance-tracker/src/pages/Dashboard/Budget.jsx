@@ -17,6 +17,9 @@ const Budget = () => {
     const [loading, setLoading] = useState(true);
     const [openAddBudgetModal, setOpenAddBudgetModal] = useState(false);
     const [openAddTransactionModal, setOpenAddTransactionModal] = useState(false);
+    
+    // Edit Mode State
+    const [selectedBudget, setSelectedBudget] = useState(null);
 
     const fetchData = async () => {
         try {
@@ -86,13 +89,21 @@ const Budget = () => {
 
     const handleAddBudget = async (budgetData) => {
         try {
-            await axiosInstance.post(API_PATHS.BUDGET.ADD_BUDGET, budgetData);
-            toast.success("Budget added successfully");
+            if (selectedBudget) {
+                // UPDATE
+                await axiosInstance.put(API_PATHS.BUDGET.UPDATE_BUDGET(selectedBudget._id), budgetData);
+                toast.success("Budget updated successfully");
+            } else {
+                // CREATE
+                await axiosInstance.post(API_PATHS.BUDGET.ADD_BUDGET, budgetData);
+                toast.success("Budget added successfully");
+            }
             setOpenAddBudgetModal(false);
+            setSelectedBudget(null);
             fetchData();
         } catch (error) {
-            console.error("Error adding budget:", error);
-            toast.error("Failed to add budget");
+            console.error("Error saving budget:", error);
+            toast.error("Failed to save budget");
         }
     };
 
@@ -107,7 +118,10 @@ const Budget = () => {
                         <p className="text-gray-500 text-sm mt-1">Track your spending and save more.</p>
                     </div>
                     <button
-                        onClick={() => setOpenAddBudgetModal(true)}
+                        onClick={() => {
+                            setSelectedBudget(null);
+                            setOpenAddBudgetModal(true);
+                        }}
                         className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-purple-500/20 hover:bg-purple-700 transition-all active:scale-95"
                     >
                         <IoMdAdd size={20} /> Set New Budget
@@ -122,18 +136,25 @@ const Budget = () => {
                     <>
                         <BudgetOverview budgets={budgets} expenses={expenses} />
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <div className="lg:col-span-2">
-                                <h3 className="text-lg font-bold text-gray-900 mb-4">Budget Categories</h3>
+                        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+                            <div className="xl:col-span-2 space-y-6">
+                                <h3 className="text-xl font-bold text-gray-900">Budget Categories</h3>
                                 {budgets.length > 0 ? (
-                                    <BudgetList budgets={budgets} expenses={expenses} />
+                                    <BudgetList 
+                                        budgets={budgets} 
+                                        expenses={expenses} 
+                                        onEdit={(budget) => {
+                                            setSelectedBudget(budget);
+                                            setOpenAddBudgetModal(true);
+                                        }}
+                                    />
                                 ) : (
-                                    <div className="bg-white p-6 rounded-2xl text-center text-gray-500 border border-gray-100">
+                                    <div className="bg-white p-6 rounded-2xl text-center text-gray-500 border border-gray-100 shadow-sm">
                                         No budgets set. Click "Set New Budget" to get started.
                                     </div>
                                 )}
                             </div>
-                            <div className="lg:col-span-1">
+                            <div className="xl:col-span-1 h-full">
                                 <BudgetChart budgets={budgets} expenses={expenses} />
                             </div>
                         </div>
@@ -143,12 +164,16 @@ const Budget = () => {
                 {/* Add Budget Modal */}
                 <Modal
                     isOpen={openAddBudgetModal}
-                    onClose={() => setOpenAddBudgetModal(false)}
-                    title="Set New Budget"
+                    onClose={() => {
+                        setOpenAddBudgetModal(false);
+                        setSelectedBudget(null);
+                    }}
+                    title={selectedBudget ? "Edit Budget" : "Set New Budget"}
                 >
                     <AddBudgetForm
                         onAddBudget={handleAddBudget}
                         onClose={() => setOpenAddBudgetModal(false)}
+                        budget={selectedBudget}
                     />
                 </Modal>
 

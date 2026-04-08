@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 
-const AddBudgetForm = ({ onAddBudget, onClose }) => {
+const AddBudgetForm = ({ onAddBudget, onClose, budget }) => {
     const [formData, setFormData] = useState({
-        category: "",
-        amount: "",
-        startDate: "",
-        notify: false,
-        icon: ""
+        category: budget?.category || "",
+        amount: budget?.amount || "",
+        startDate: budget?.startDate ? budget.startDate.split("T")[0] : "",
+        notify: budget?.notify || false,
+        icon: budget?.icon || ""
     });
 
     const categories = [
@@ -124,7 +124,7 @@ const AddBudgetForm = ({ onAddBudget, onClose }) => {
                     type="submit"
                     className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/30 hover:bg-purple-700 hover:shadow-purple-700/40 transition-all active:scale-[0.98] mt-2"
                 >
-                    Create Budget
+                    {budget ? "Update Budget" : "Create Budget"}
                 </button>
             </form>
         </div>

@@ -39,7 +39,8 @@ export const API_PATHS = {
     BUDGET: {
         ADD_BUDGET: "/api/v1/budget/add-budget",
         GET_BUDGETS: "/api/v1/budget/get-budgets",
-        DELETE_BUDGET: (budgetId) => `/api/v1/budget/delete-budget/${budgetId}`,
+        UPDATE_BUDGET: (id) => `/api/v1/budget/update-budget/${id}`,
+        DELETE_BUDGET: (id) => `/api/v1/budget/delete-budget/${id}`,
     },
     IMAGE: {
         UPLOAD_IMAGE: "/api/v1/auth/upload-image",

@@ -1,7 +1,7 @@
 import React from "react";
 import { addThousandSeparator } from "../../utils/helper";
 
-const BudgetList = ({ budgets, expenses }) => {
+const BudgetList = ({ budgets, expenses, onEdit }) => {
     // Helper to get spent amount for a category
     const getSpentAmount = (category) => {
         return expenses
@@ -30,7 +30,11 @@ const BudgetList = ({ budgets, expenses }) => {
                 const isOverBudget = spent > budget.amount;
 
                 return (
-                    <div key={budget._id} className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group">
+                    <div 
+                        key={budget._id} 
+                        className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:shadow-lg transition-all duration-300 group cursor-pointer active:scale-[0.99]"
+                        onClick={() => onEdit(budget)}
+                    >
                         <div className="flex justify-between items-start mb-6">
                             <div className="flex items-center gap-4">
                                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-colors ${getBackgroundColor(percentage)}`}>
@@ -41,9 +45,6 @@ const BudgetList = ({ budgets, expenses }) => {
                                     <p className="text-xs text-gray-400 font-medium">Monthly Budget</p>
                                 </div>
                             </div>
-                            <button className="text-gray-300 hover:text-gray-600 transition-colors text-xl">
-                                ⋮
-                            </button>
                         </div>
 
                         <div className="space-y-4">
